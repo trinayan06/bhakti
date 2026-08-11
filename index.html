@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>भक्ति मंदिर — Devotional Music Stream</title>
+  <meta name="description" content="Bhakti Mandir — A serene, full-screen devotional music sanctuary with non-stop spiritual bhajans, aartis, mantras, and hymns.">
+  <meta property="og:title" content="Bhakti Mandir — Devotional Music Stream">
+  <meta property="og:description" content="A serene, full-screen devotional music sanctuary with non-stop spiritual bhajans, aartis, mantras, and hymns.">
+  
+  <!-- Google Fonts: Yatra One, Noto Sans Devanagari, Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Yatra+One&display=swap" rel="stylesheet">
+  
+  <!-- Favicon & Touch Icons (Transparent) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="icon" type="image/png" href="babafav.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Fullscreen Background Layer -->
+  <div class="bg-layer" aria-hidden="true"></div>
+
+  <!-- Fullscreen Petal Shower Layer -->
+  <div id="petal-layer" aria-hidden="true"></div>
+
+  <!-- Top Bar: Clock, Devotional Actions (Bell & Flower) & Live Online Counter -->
+  <header class="top-nav">
+    <div class="live-clock" id="live-clock" aria-label="Current time">--:-- --</div>
+
+    <!-- Devotional Interactive Actions -->
+    <div class="devotional-actions">
+      <button id="btn-bell" class="action-btn" type="button" aria-label="Ring Temple Bell" title="Ring Temple Bell (घंटी)">
+        <span class="action-icon" aria-hidden="true">🔔</span>
+      </button>
+      <button id="btn-flower" class="action-btn" type="button" aria-label="Offer Flowers" title="Offer Flower Shower (पुष्प वर्षा)">
+        <span class="action-icon" aria-hidden="true">🌸</span>
+      </button>
+    </div>
+
+    <div class="live-status" aria-label="Active listeners">
+      <span class="pulsing-dot" aria-hidden="true"></span>
+      <span id="online-counter" class="online-text">-- listening</span>
+    </div>
+  </header>
+
+  <!-- Central Visual Heading: Bhakti Mandir -->
+  <main class="center-content">
+    <div class="title-stack">
+      <h1 class="main-title" aria-label="Bhakti">भक्ति</h1>
+      <div class="mandir-title" aria-label="Mandir">मंदिर</div>
+    </div>
+    <p class="sub-caption">Continuous Devotional Stream</p>
+  </main>
+
+  <!-- Subtle Entrance Hint (Non-blocking, fades out on first tap) -->
+  <div id="tap-hint" class="tap-hint" aria-live="polite">
+    <span class="tap-hint-om" aria-hidden="true">ॐ</span>
+    <span class="tap-hint-text">tap anywhere to begin</span>
+  </div>
+
+  <!-- Prominent Floating Glassmorphic Player Bar (70-80% viewport width) -->
+  <div class="player-bar-container" id="player-container">
+    <div class="glass-player-pill" role="region" aria-label="Devotional Audio Player">
+      
+      <!-- Track Artwork -->
+      <div class="track-artwork">
+        <img id="track-thumb" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100%25' height='100%25' fill='%232a1510'/%3E%3Ctext x='50%25' y='55%25' font-size='28' fill='%23d97706' font-family='sans-serif' text-anchor='middle'%3Eॐ%3C/text%3E%3C/svg%3E" alt="Track thumbnail">
+        <div class="artwork-glow" aria-hidden="true"></div>
+      </div>
+
+      <!-- Track Information & Interactive Seekable Progress -->
+      <div class="track-details">
+        <div class="track-meta">
+          <div class="track-title-wrapper">
+            <span id="track-title" class="track-title">Devotional Stream</span>
+          </div>
+          <span id="track-artist" class="track-artist">Bhakti</span>
+        </div>
+
+        <!-- Draggable & Interactive Progress Bar -->
+        <div class="progress-section">
+          <div class="progress-track-wrapper" id="progress-container" role="slider" aria-label="Seek audio position" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="progress-track" id="progress-track">
+              <div class="progress-fill" id="progress-fill"></div>
+              <div class="progress-thumb" id="progress-thumb"></div>
+            </div>
+          </div>
+          <div class="time-display">
+            <span id="time-elapsed">0:00</span>
+            <span class="time-separator">/</span>
+            <span id="time-duration">--:--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Playback Controls -->
+      <div class="player-controls">
+        <button id="btn-prev" class="ctrl-btn" type="button" aria-label="Previous Track" title="Previous Track">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+          </svg>
+        </button>
+
+        <button id="btn-play-pause" class="ctrl-btn play-btn" type="button" aria-label="Play or Pause" title="Play / Pause">
+          <!-- Play Icon -->
+          <svg id="icon-play" viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <!-- Pause Icon -->
+          <svg id="icon-pause" class="hidden" viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+        </button>
+
+        <button id="btn-next" class="ctrl-btn" type="button" aria-label="Next Track" title="Next Track">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Hidden YouTube IFrame Container -->
+  <div id="youtube-player-container" class="hidden-player-host" aria-hidden="true">
+    <div id="youtube-player"></div>
+  </div>
+
+  <!-- Supabase JS Client for Realtime Presence Visitor Counting -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <!-- Application Logic -->
+  <script src="player.js"></script>
+</body>
+</html>

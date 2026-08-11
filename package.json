@@ -1,0 +1,14 @@
+{
+  "name": "bhakti-site",
+  "version": "1.0.0",
+  "description": "Bhakti - Devotional Music Stream Web App",
+  "main": "index.html",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "serve": "npx -y serve ."
+  },
+  "keywords": ["bhakti", "music", "devotional"],
+  "author": "",
+  "license": "ISC"
+}

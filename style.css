@@ -1,0 +1,726 @@
+/* ==========================================================================
+   Bhakti Mandir - Master Stylesheet
+   Full-bleed vivid background, Bhakti Mandir calligraphy,
+   compact chunky capsule glass player with vinyl rotating artwork & white controls.
+   ========================================================================== */
+
+/* --- CSS Reset & Variables --- */
+:root {
+  --font-title: 'Yatra One', 'Noto Sans Devanagari', serif;
+  --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --color-gold-50: #FFFBEB;
+  --color-gold-100: #FEF3C7;
+  --color-gold-300: #FCD34D;
+  --color-gold-400: #FBBF24;
+  --color-gold-500: #F59E0B;
+  --color-gold-600: #D97706;
+  --color-saffron: #E35314;
+  --color-terracotta: #C4633B;
+  --color-maroon: #8B1E1E;
+
+  --color-bg-glass: rgba(40, 20, 15, 0.35);
+  --color-border-glass: rgba(255, 255, 255, 0.14);
+  --color-border-glass-bright: rgba(255, 255, 255, 0.28);
+
+  --color-text-main: #FFFFFF;
+  --color-text-dim: rgba(255, 243, 230, 0.75);
+  --color-text-muted: rgba(255, 235, 215, 0.65);
+
+  --shadow-gold-glow: 0 0 40px rgba(245, 158, 11, 0.4);
+  --shadow-player: 0 10px 36px rgba(0, 0, 0, 0.45);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: #0d0705;
+  font-family: var(--font-ui);
+  color: var(--color-text-main);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+/* --- Fullscreen Visual Background (Brightened & Vivid) --- */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  background-image: url('baba.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  z-index: 1;
+  filter: brightness(1.15) contrast(1.08) saturate(1.1);
+  -webkit-filter: brightness(1.15) contrast(1.08) saturate(1.1);
+}
+
+/* --- Top Navigation Bar --- */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.live-clock {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-gold-100);
+  background: rgba(40, 20, 15, 0.4);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  font-variant-numeric: tabular-nums;
+}
+
+.live-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(40, 20, 15, 0.4);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Devotional Actions (Bell & Flower) --- */
+.devotional-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(40, 20, 15, 0.45);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  font-size: 19px;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: scale(1.18);
+}
+
+.action-btn:active {
+  transform: scale(0.92);
+}
+
+/* Bell Shake/Wobble Animation */
+@keyframes ring {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-22deg); }
+  40% { transform: rotate(22deg); }
+  60% { transform: rotate(-12deg); }
+  80% { transform: rotate(12deg); }
+}
+
+.action-btn.is-ringing .action-icon,
+.action-btn.ringing .action-icon,
+.action-btn.is-ringing,
+.action-btn.ringing {
+  display: inline-block;
+  animation: ring 0.5s ease-in-out;
+  transform-origin: top center;
+}
+
+/* --- Fullscreen Petal Shower Layer --- */
+#petal-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.petal {
+  position: absolute;
+  top: -45px;
+  user-select: none;
+  pointer-events: none;
+  animation: fall linear forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(0.85);
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(112vh) rotate(360deg) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.pulsing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10B981;
+  box-shadow: 0 0 12px #10B981;
+  animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-dot {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.45;
+    transform: scale(1.3);
+  }
+}
+
+.online-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-gold-100);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Center Heading: Bhakti Mandir --- */
+.center-content {
+  position: fixed;
+  top: 32%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 5;
+  width: 90%;
+  max-width: 650px;
+  pointer-events: none;
+}
+
+.title-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.main-title {
+  font-family: var(--font-title);
+  font-size: clamp(4.2rem, 10vw, 7.5rem);
+  font-weight: 400;
+  line-height: 0.92;
+  color: #FFFFFF;
+  text-shadow:
+    0 2px 14px rgba(0, 0, 0, 0.9),
+    0 0 45px rgba(245, 158, 11, 0.65),
+    0 0 85px rgba(217, 119, 6, 0.45);
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.mandir-title {
+  font-family: var(--font-title);
+  font-size: clamp(2rem, 4.8vw, 3.6rem);
+  /* ~40-50% size of line 1 */
+  font-weight: 400;
+  line-height: 1;
+  color: #FFFFFF;
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.85),
+    0 0 35px rgba(245, 158, 11, 0.55),
+    0 0 65px rgba(217, 119, 6, 0.35);
+  letter-spacing: 0.04em;
+  margin-top: -2px;
+}
+
+.sub-caption {
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(254, 243, 199, 0.95);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  font-weight: 600;
+}
+
+/* --- Subtle Tap Hint (Non-Blocking) --- */
+.tap-hint {
+  position: fixed;
+  bottom: 165px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 22px;
+  background: rgba(40, 20, 15, 0.45);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  color: rgba(254, 243, 199, 0.9);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  z-index: 15;
+  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 15px rgba(245, 158, 11, 0.15);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: hint-breathe 3s ease-in-out infinite;
+}
+
+.tap-hint.faded-out {
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  pointer-events: none;
+}
+
+.tap-hint-om {
+  color: var(--color-gold-400);
+  font-size: 16px;
+  line-height: 1;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+}
+
+@keyframes hint-breathe {
+
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: translate(-50%, 0);
+  }
+
+  50% {
+    opacity: 0.55;
+    transform: translate(-50%, -4px);
+  }
+}
+
+/* --- Balanced Chunky Capsule Glass Player Bar (480-500px max-width) --- */
+.player-bar-container {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(88vw, 690px);
+  /* Ideal 480-500px balanced width */
+  z-index: 20;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.glass-player-pill {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 122px;
+  /* Chunky capsule height */
+  padding: 14px 22px 14px 16px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(40, 20, 15, 0.38) 45%, rgba(25, 12, 9, 0.42) 100%), rgba(40, 20, 15, 0.35);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+  /* Continuous capsule shape */
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.45), 0 0 25px rgba(245, 158, 11, 0.08);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.glass-player-pill:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.55), 0 0 35px rgba(245, 158, 11, 0.15);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(45, 22, 16, 0.42) 45%, rgba(28, 14, 10, 0.45) 100%), rgba(40, 20, 15, 0.4);
+}
+
+/* --- Rotating Vinyl Album Artwork --- */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.track-artwork {
+  position: relative;
+  width: 74px;
+  height: 74px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2.5px solid rgba(245, 158, 11, 0.5);
+  /* Static brass vinyl ring frame */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(245, 158, 11, 0.15);
+  background-color: #120907;
+}
+
+.track-artwork img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+  animation: spin 8s linear infinite;
+  animation-play-state: paused;
+  /* Runs only when actively playing */
+  will-change: transform;
+}
+
+.track-artwork.is-playing img {
+  animation-play-state: running;
+}
+
+/* Track Metadata & Progress Details */
+.track-details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+.track-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.track-title-wrapper {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.track-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.01em;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+.track-artist {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 243, 230, 0.7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Interactive Draggable Progress Bar --- */
+.progress-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress-track-wrapper {
+  flex: 1;
+  padding: 8px 0;
+  /* Click/drag hit area */
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  position: relative;
+  transition: height 0.15s ease;
+}
+
+.progress-track-wrapper:hover .progress-track,
+.progress-track-wrapper.is-dragging .progress-track {
+  height: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #F59E0B, #FBBF24, #FFFBEB);
+  border-radius: 9999px;
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.85);
+  position: relative;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
+.progress-track-wrapper.is-dragging .progress-fill {
+  transition: none;
+}
+
+.progress-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2px solid #F59E0B;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.95), 0 2px 6px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.progress-track-wrapper:hover .progress-thumb,
+.progress-track-wrapper.is-dragging .progress-thumb {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.time-display {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: 0.03em;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  display: flex;
+  gap: 2px;
+  user-select: none;
+}
+
+.time-separator {
+  opacity: 0.6;
+}
+
+/* --- Player Controls with Solid White Buttons --- */
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Prev / Next Buttons */
+.ctrl-btn {
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ctrl-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ctrl-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.18);
+  transform: scale(1.06);
+}
+
+.ctrl-btn:active {
+  transform: scale(0.92);
+}
+
+/* Center Play/Pause Button (Solid White Circle with Dark Icon) */
+.play-btn {
+  width: 50px;
+  height: 50px;
+  background: #FFFFFF;
+  color: #2b1d14;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 15px rgba(255, 255, 255, 0.35);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.play-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: #2b1d14;
+}
+
+.play-btn:hover {
+  transform: scale(1.08);
+  background: #FFFFFF;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45), 0 0 25px rgba(255, 255, 255, 0.6);
+}
+
+.play-btn:active {
+  transform: scale(0.94);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* --- Hidden YouTube Player Host --- */
+.hidden-player-host {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  overflow: hidden;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 960px) {
+  .tap-hint {
+    bottom: 165px;
+  }
+}
+
+@media (max-width: 768px),
+(max-width: 900px) and (orientation: portrait) {
+  .bg-layer {
+    background-image: url('baba2.png');
+    background-position: center center;
+  }
+}
+
+@media (max-width: 680px) {
+  .top-nav {
+    padding: 16px 20px;
+  }
+
+  .live-clock,
+  .live-status {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  .player-bar-container {
+    bottom: 20px;
+    width: min(92vw, 480px);
+  }
+
+  .glass-player-pill {
+    min-height: 110px;
+    padding: 12px 16px 12px 12px;
+    gap: 12px;
+  }
+
+  .track-artwork {
+    width: 66px;
+    height: 66px;
+  }
+
+  .track-title {
+    font-size: 14px;
+  }
+
+  .track-artist {
+    font-size: 12px;
+  }
+
+  .time-display {
+    font-size: 11px;
+  }
+
+  .ctrl-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .ctrl-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .play-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .play-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .tap-hint {
+    bottom: 145px;
+    font-size: 11px;
+    padding: 6px 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .time-display {
+    display: none;
+  }
+
+  .player-controls {
+    gap: 4px;
+  }
+}
