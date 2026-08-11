@@ -13,24 +13,84 @@
     '6bIFN4QobuM', // Bagad Bam — Kailash Kher
     '9tb2s_HhpwA', // Hanuman Chalisa — Gulshan Kumar & Hariharan
     'J69f5_PyEuY', // sakal hans
+    '4DkNCgUXbig', // parvati boli shankar
   ];
 
   const bigPlaylists = [
-    'PL9Q99nEuOnoyTI-8IMslKgM6mrX0YOlIn', // Hansraj Raghuvanshi Top Bhajan
+    'PL9bw4S5ePsEE0jGfUgUMvzeWAaMPcqHL9&si', // zubeen nutial Top Bhajan
     'PLM3TSQaW_spO3Ys9tQOlgHdQdY7eGflFu', // Top All God's Non Stop - Bhajans, Aarti, Mantra, Stotram
     'PLFwWLQlofbIlOZ0fANFpGoSRcV_ZFNqBy', // Bhajan India All Time Popular Bhajans | Mantras | Aarti
     'PLBh0UuZ31iHCVmT9S65cKMKIWSOeeDEvE', // Aarti Bhajan collection
     'PLmg7X7Fh8K2rxqywyc9KqWs0wJ-8IWPHI', // Ganesh Aarti & Bhajans
   ];
 
+  // --- Cross-Session Resume Utilities ---
+  function getResumeState() {
+    try {
+      const raw = localStorage.getItem('bhakti_resume');
+      if (!raw) return null;
+      const state = JSON.parse(raw);
+      if (!state || !state.videoId) return null;
+      const dayMs = 24 * 60 * 60 * 1000;
+      if (Date.now() - state.savedAt > 7 * dayMs) return null; // ignore if older than a week
+      return state;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  let lastSave = 0;
+  function saveProgress(currentTime, force = false) {
+    if (typeof currentTime !== 'number' || isNaN(currentTime) || currentTime < 0) return;
+    const now = Date.now();
+    if (!force && (now - lastSave < 5000)) return;
+    lastSave = now;
+
+    const vid = extractVideoId() || currentVideoId;
+    if (!vid) return;
+
+    try {
+      localStorage.setItem('bhakti_resume', JSON.stringify({
+        videoId: vid,
+        time: Math.floor(currentTime),
+        isOpeningPhase: isOpeningPhase,
+        openingTrackIndex: openingTrackIndex,
+        currentPlaylistIndex: currentPlaylistIndex,
+        savedAt: now,
+      }));
+    } catch (e) { }
+  }
+
   // --- State Variables ---
+  const savedState = getResumeState();
   let player = null;
   let playerReady = false;
   let hasInteracted = false;
+  let hasStartedResumedPlayback = false;
   let isOpeningPhase = true;
   let openingTrackIndex = 0;
   let currentPlaylistIndex = 0;
   let currentVideoId = fixedOpeningTracks[0];
+
+  if (savedState) {
+    currentVideoId = savedState.videoId;
+    if (savedState.isOpeningPhase !== undefined) {
+      isOpeningPhase = savedState.isOpeningPhase;
+      openingTrackIndex = savedState.openingTrackIndex || 0;
+    } else {
+      const idx = fixedOpeningTracks.indexOf(savedState.videoId);
+      if (idx !== -1) {
+        isOpeningPhase = true;
+        openingTrackIndex = idx;
+      } else {
+        isOpeningPhase = false;
+      }
+    }
+    if (savedState.currentPlaylistIndex !== undefined) {
+      currentPlaylistIndex = savedState.currentPlaylistIndex;
+    }
+  }
+
   let isPlaying = false;
   let progressInterval = null;
   let isDragging = false;
@@ -147,10 +207,14 @@
 
   function createPlayer() {
     if (player) return;
+    const resume = getResumeState();
+    const initialVid = resume && resume.videoId ? resume.videoId : fixedOpeningTracks[0];
+    const startSec = resume && resume.time ? Math.floor(resume.time) : 0;
+
     player = new YT.Player('youtube-player', {
       height: '10',
       width: '10',
-      videoId: fixedOpeningTracks[0],
+      videoId: initialVid,
       playerVars: {
         autoplay: 0,
         controls: 0,
@@ -161,6 +225,7 @@
         playsinline: 1,
         rel: 0,
         enablejsapi: 1,
+        start: startSec,
       },
       events: {
         onReady: onPlayerReady,
@@ -182,8 +247,11 @@
   }
 
   function setInitialOpeningMetadata() {
+    const resume = getResumeState();
+    const vid = resume && resume.videoId ? resume.videoId : fixedOpeningTracks[0];
+    currentVideoId = vid;
     if (trackThumbEl) {
-      trackThumbEl.src = `https://img.youtube.com/vi/${fixedOpeningTracks[0]}/hqdefault.jpg`;
+      trackThumbEl.src = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
     }
     checkAndUpdateTrackInfo();
   }
@@ -447,6 +515,10 @@
       const currentTime = player.getCurrentTime ? player.getCurrentTime() : 0;
       const duration = player.getDuration ? player.getDuration() : 0;
 
+      if (currentTime > 0) {
+        saveProgress(currentTime);
+      }
+
       if (timeElapsedEl) {
         timeElapsedEl.textContent = formatTime(currentTime);
       }
@@ -552,7 +624,20 @@
   }
 
   function startPlayback() {
-    if (player && player.playVideo) {
+    if (!player) return;
+    const resume = getResumeState();
+    if (resume && resume.videoId && !hasStartedResumedPlayback) {
+      hasStartedResumedPlayback = true;
+      if (player.loadVideoById) {
+        player.loadVideoById({
+          videoId: resume.videoId,
+          startSeconds: resume.time || 0,
+        });
+      }
+      if (player.playVideo) {
+        player.playVideo();
+      }
+    } else if (player && player.playVideo) {
       player.playVideo();
     }
   }
@@ -620,6 +705,25 @@
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
       handlePreviousTrack();
+    }
+  });
+
+  // --- Cross-Session Page Lifecycle Progress Save Listeners ---
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && player && player.getCurrentTime) {
+      saveProgress(player.getCurrentTime(), true);
+    }
+  });
+
+  window.addEventListener('pagehide', () => {
+    if (player && player.getCurrentTime) {
+      saveProgress(player.getCurrentTime(), true);
+    }
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (player && player.getCurrentTime) {
+      saveProgress(player.getCurrentTime(), true);
     }
   });
 
