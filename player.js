@@ -17,11 +17,11 @@
   ];
 
   const bigPlaylists = [
-    'PL9bw4S5ePsEE0jGfUgUMvzeWAaMPcqHL9&si', // zubeen nutial Top Bhajan
-    'PLM3TSQaW_spO3Ys9tQOlgHdQdY7eGflFu', // Top All God's Non Stop - Bhajans, Aarti, Mantra, Stotram
-    'PLFwWLQlofbIlOZ0fANFpGoSRcV_ZFNqBy', // Bhajan India All Time Popular Bhajans | Mantras | Aarti
-    'PLBh0UuZ31iHCVmT9S65cKMKIWSOeeDEvE', // Aarti Bhajan collection
+    'PLyXHXSHxLqKwaxMiv3ubXQM25jOi_STZ0', // anuradha paudal  Top Bhajan
+    'PL9bw4S5ePsEE0jGfUgUMvzeWAaMPcqHL9', // zubeen nutial Top Bhajan
+    'PLFPJRCFRDARRXCaWKpL5tuyWzz_B_ntwE', // Top All God's Non Stop - Bhajans, Aarti, Mantra, Stotram
     'PLmg7X7Fh8K2rxqywyc9KqWs0wJ-8IWPHI', // Ganesh Aarti & Bhajans
+    'PLt_1W0k07q8N5x26uY9z4-kO4gGf822K0', // naina devi 
   ];
 
   // --- Cross-Session Resume Utilities ---
